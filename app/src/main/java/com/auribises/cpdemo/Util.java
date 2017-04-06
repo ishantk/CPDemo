@@ -24,7 +24,7 @@ public class Util {
     public static final String COL_CITY = "CITY";
 
     public static final String CREATE_TAB_QUERY = "create table User(" +
-            "_ID int primary key autoincrement," +
+            "_ID integer primary key autoincrement," +
             "NAME varchar(256)," +
             "PHONE varchar(256)," +
             "EMAIL varchar(256)," +

@@ -2,9 +2,12 @@ package com.auribises.cpdemo;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -126,5 +129,26 @@ public class UserRegistrationActivity extends AppCompatActivity implements View.
         eTxtPhone.setText("");
         eTxtEmail.setText("");
         spCity.setSelection(0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        menu.add(1,101,0,"All Users");
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if(id == 101){
+            Intent intent = new Intent(UserRegistrationActivity.this,AllUsersActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
