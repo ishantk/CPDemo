@@ -1,10 +1,12 @@
 package com.auribises.cpdemo;
 
+import java.io.Serializable;
+
 /**
  * Created by ishantkumar on 04/04/17.
  */
 
-public class User {
+public class User implements Serializable{
 
     // Attributes
     int id;

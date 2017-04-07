@@ -27,9 +27,11 @@ public class UserRegistrationActivity extends AppCompatActivity implements View.
 
     ArrayAdapter<String> adapter;
 
-    User user;
+    User user,rcvUser;
 
     ContentResolver resolver;
+
+    boolean updateMode;
 
     void initViews(){
         eTxtName = (EditText)findViewById(R.id.editTextName);
@@ -63,6 +65,34 @@ public class UserRegistrationActivity extends AppCompatActivity implements View.
 
         resolver = getContentResolver();
 
+        Intent rcv = getIntent();
+        updateMode = rcv.hasExtra("keyUser");
+        if(updateMode) {
+            rcvUser = (User) rcv.getSerializableExtra("keyUser");
+            eTxtName.setText(rcvUser.getName());
+            eTxtPhone.setText(rcvUser.getPhone());
+            eTxtEmail.setText(rcvUser.getEmail());
+
+            if(rcvUser.getGender().equals("Male")){
+                rbMale.setChecked(true);
+            }else{
+                rbFemale.setChecked(true);
+            }
+
+            int p = 0;
+            for(int i=0;i<adapter.getCount();i++){
+                if(adapter.getItem(i).equals(rcvUser.getCity())){
+                    p = i;
+                    break;
+                }
+            }
+            spCity.setSelection(p);
+
+            btnSubmit.setText("Update "+rcvUser.getName());
+        }
+
+
+
     }
 
     @Override
@@ -92,10 +122,23 @@ public class UserRegistrationActivity extends AppCompatActivity implements View.
         values.put(Util.COL_GENDER,user.getGender());
         values.put(Util.COL_CITY,user.getCity());
 
-        Uri dummy = resolver.insert(Util.USER_URI,values);
-        Toast.makeText(this,"Record Inserted: "+user.getName()+" - "+dummy.getLastPathSegment(),Toast.LENGTH_LONG).show();
+        if(updateMode){
+            // Update Mode
+            String where = Util.COL_ID+" = "+rcvUser.getId();
+            int i = resolver.update(Util.USER_URI,values,where,null);
+            if(i>0){
+                Toast.makeText(this,"User Updated Successfully",Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }else{
+            // Insert Mode
+            Uri dummy = resolver.insert(Util.USER_URI,values);
+            Toast.makeText(this,"Record Inserted: "+user.getName()+" - "+dummy.getLastPathSegment(),Toast.LENGTH_LONG).show();
 
-        clearFields();
+            clearFields();
+
+        }
+
     }
 
     @Override

@@ -1,7 +1,11 @@
 package com.auribises.cpdemo;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +23,7 @@ public class AllUsersActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<User> userList;
     UserAdapter adapter;
     User user;
+    int pos;
 
     void initViews(){
         resolver = getContentResolver();
@@ -66,6 +71,8 @@ public class AllUsersActivity extends AppCompatActivity implements AdapterView.O
 
         showOptions();
 
+        pos = i;
+
     }
 
     void showOptions(){
@@ -80,11 +87,13 @@ public class AllUsersActivity extends AppCompatActivity implements AdapterView.O
                         break;
 
                     case 1:
-
+                        Intent intent = new Intent(AllUsersActivity.this,UserRegistrationActivity.class);
+                        intent.putExtra("keyUser",user);
+                        startActivity(intent);
                         break;
 
                     case 2:
-
+                        deleteUser();
                         break;
                 }
             }
@@ -101,4 +110,28 @@ public class AllUsersActivity extends AppCompatActivity implements AdapterView.O
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    void deleteUser(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete "+user.getName());
+        builder.setMessage("Are you sure you wish to delete ?");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                String where = Util.COL_ID+" = "+user.getId();
+                //String where = Util.COL_EMAIL+" = '"+user.getEmail()+"'";
+
+                int row = resolver.delete(Util.USER_URI,where,null);
+                if(row>0){
+                    userList.remove(pos);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel",null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }
