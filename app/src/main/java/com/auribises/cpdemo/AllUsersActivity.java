@@ -10,9 +10,13 @@ import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,10 +29,35 @@ public class AllUsersActivity extends AppCompatActivity implements AdapterView.O
     User user;
     int pos;
 
+    EditText eTxtSearch;
+
     void initViews(){
         resolver = getContentResolver();
         listView = (ListView)findViewById(R.id.listView);
         userList = new ArrayList<>();
+        eTxtSearch = (EditText)findViewById(R.id.ediTextSearch);
+
+        eTxtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String str = charSequence.toString();
+                //Toast.makeText(AllUsersActivity.this,"You Entered: "+str,Toast.LENGTH_LONG).show();
+                if(adapter!=null) {
+                    adapter.filter(str);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
     }
 
     @Override
